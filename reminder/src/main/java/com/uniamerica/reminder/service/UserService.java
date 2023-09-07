@@ -1,31 +1,44 @@
 package com.uniamerica.reminder.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
-import com.uniamerica.reminder.dto.User;
+import com.uniamerica.reminder.dto.UserDTO;
+import com.uniamerica.reminder.entity.User;
 import com.uniamerica.reminder.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
-import org.springframework.util.Assert;
-import org.springframework.web.bind.annotation.RequestBody;
-
 
 @Service
 public class UserService {
-	
+
 	@Autowired
-	private UserRepository repository;
-	
-	public List<User> findAll(){
-		return repository.findAll();
+	private UserRepository userRepository;
+
+	public List<UserDTO> findAll() {
+		return userRepository.findAll()
+				.stream()
+				.map(this::convertToDTO)
+				.collect(Collectors.toList());
 	}
-	@Transactional(rollbackFor = Exception.class)
-	public void cadastrar(@RequestBody final User user){
-		Assert.isTrue(user.getName().length() > 2, "O nome está faltando");
-		this.repository.save(user);
+
+	public UserDTO save(UserDTO userDto) {
+		User user = convertToEntity(userDto);
+		user = userRepository.save(user);
+		return convertToDTO(user);
+	}
+
+	private User convertToEntity(UserDTO userDto) {
+		User user = new User();
+		user.setId(userDto.getId());
+		user.setName(userDto.getName());
+		return user;
+	}
+
+	private UserDTO convertToDTO(User user) {
+		UserDTO userDto = new UserDTO();
+		userDto.setId(user.getId());
+		userDto.setName(user.getName());
+		return userDto;
 	}
 }

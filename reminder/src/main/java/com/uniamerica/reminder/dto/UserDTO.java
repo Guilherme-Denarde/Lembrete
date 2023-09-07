@@ -1,14 +1,14 @@
 package com.uniamerica.reminder.dto;
 
 
-public class User {
+public class UserDTO {
 
 	private Long id;
 	private String name;
 		
-	public User() {};
+	public UserDTO() {};
 	
-	public User(Long id, String name) {
+	public UserDTO(Long id, String name) {
 		this.id = id;
 		this.name = name;
 	}

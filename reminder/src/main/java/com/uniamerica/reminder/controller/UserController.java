@@ -1,6 +1,6 @@
 package com.uniamerica.reminder.controller;
 
-import com.uniamerica.reminder.dto.User;
+import com.uniamerica.reminder.dto.UserDTO;
 import com.uniamerica.reminder.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -19,7 +19,7 @@ public class UserController {
 	private UserService service;
 
 	@GetMapping()
-	public ResponseEntity<List<User>> findAll() {
+	public ResponseEntity<List<UserDTO>> findAll() {
 		try {
 			return ResponseEntity.ok(service.findAll());
 		} catch (Exception e) {
@@ -28,9 +28,9 @@ public class UserController {
 	}
 
 	@PostMapping("/add")
-	public ResponseEntity<String> cadastrar(@RequestBody final User user){
+	public ResponseEntity<String> cadastrar(@RequestBody final UserDTO userDTO){
 		try {
-			this.service.cadastrar(user);
+			this.service.save(userDTO);
 			return ResponseEntity.ok("Registrado cadastrado com Sucesso");
 		}
 		catch (DataIntegrityViolationException e) {
@@ -40,4 +40,6 @@ public class UserController {
 			return ResponseEntity.badRequest().body("Error: " + e.getMessage());
 		}
 	}
+
+
 }
